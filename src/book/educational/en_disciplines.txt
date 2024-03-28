@@ -1,0 +1,20 @@
+Machine Learning
+Deep Learning
+Prompt Engineering
+AI in Healthcare
+Mathematics for Machine Learning
+Natural Language Processing
+Programming Fundamentals
+Algorithms
+Generative Adversarial Networks (GANs)
+Advanced Learning Algorithms
+Cloud Computing
+Reinforcement Learning
+Computer Vision
+Big Data Analytics
+Ethics in AI
+Robotics
+Cybersecurity
+Internet of Things (IoT)
+Blockchain Technology
+Quantum Computing
