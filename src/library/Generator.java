@@ -1,26 +1,23 @@
 package library;
 
-import book.factory.EducationalBookFactory;
 import book.educational.EducationalLiterature;
-import book.factory.FictionBookFactory;
 import book.fiction.FictionLiterature;
-import book.Book;
 import book.factory.BookFactory;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class LibraryManager {
+public class Generator {
     private final Library library;
     private final Librarian librarian;
     private final BookFactory educationalBookFactory;
     private final BookFactory fictionBookFactory;
 
-    public LibraryManager(String libraryName) {
+    public Generator(String libraryName, BookFactory educationalBookFactory, BookFactory fictionBookFactory) {
         this.library = new Library(libraryName);
         this.librarian = new Librarian(this.library);
-        this.educationalBookFactory = new EducationalBookFactory();
-        this.fictionBookFactory = new FictionBookFactory();
+        this.educationalBookFactory = educationalBookFactory;
+        this.fictionBookFactory = fictionBookFactory;
     }
 
     public Library getLibrary() {
@@ -38,7 +35,7 @@ public class LibraryManager {
 
     private void generateEducationalBooks() {
         for (int i = 0; i < 20; i++) {
-            EducationalLiterature eduBook = educationalBookFactory.createEnglishEducationalLiterature();
+            EducationalLiterature eduBook = (EducationalLiterature) educationalBookFactory.createEnglishLiterature();
             if (isUniqueBook(eduBook)) {
                 librarian.addEducationalBook(eduBook);
             } else {
@@ -47,7 +44,7 @@ public class LibraryManager {
         }
 
         for (int i = 0; i < 30; i++) {
-            EducationalLiterature eduBook = educationalBookFactory.createRussianEducationalLiterature();
+            EducationalLiterature eduBook = (EducationalLiterature) educationalBookFactory.createRussianLiterature();
             if (isUniqueBook(eduBook)) {
                 librarian.addEducationalBook(eduBook);
             } else {
@@ -58,7 +55,7 @@ public class LibraryManager {
 
     private void generateFictionBooks() {
         for (int i = 0; i < 20; i++) {
-            FictionLiterature ficBook = fictionBookFactory.createEnglishFictionLiterature();
+            FictionLiterature ficBook = (FictionLiterature) fictionBookFactory.createEnglishLiterature();
             if (isUniqueBook(ficBook)) {
                 librarian.addFictionBook(ficBook);
             } else {
@@ -67,7 +64,7 @@ public class LibraryManager {
         }
 
         for (int i = 0; i < 30; i++) {
-            FictionLiterature ficBook = fictionBookFactory.createRussianFictionLiterature();
+            FictionLiterature ficBook = (FictionLiterature) fictionBookFactory.createRussianLiterature();
             if (isUniqueBook(ficBook)) {
                 librarian.addFictionBook(ficBook);
             } else {
@@ -76,14 +73,23 @@ public class LibraryManager {
         }
     }
 
-    private boolean isUniqueBook(Book book) {
+    private boolean isUniqueBook(Object book) {
         Set<String> bookNames = new HashSet<>();
-        for (Book existingBook : library.getEducationalBooks()) {
-            bookNames.add(existingBook.getName());
+        for (Object existingBook : library.getEducationalBooks()) {
+            bookNames.add(getName(existingBook));
         }
-        for (Book existingBook : library.getFictionBooks()) {
-            bookNames.add(existingBook.getName());
+        for (Object existingBook : library.getFictionBooks()) {
+            bookNames.add(getName(existingBook));
         }
-        return !bookNames.contains(book.getName());
+        return !bookNames.contains(getName(book));
+    }
+
+    private String getName(Object book) {
+        if (book instanceof EducationalLiterature) {
+            return ((EducationalLiterature) book).getName();
+        } else if (book instanceof FictionLiterature) {
+            return ((FictionLiterature) book).getName();
+        }
+        return null;
     }
 }

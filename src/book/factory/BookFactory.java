@@ -1,14 +1,11 @@
 package book.factory;
 
-import book.educational.EducationalLiterature;
-import book.fiction.FictionLiterature;
+import book.EnglishLanguage;
+import book.RussianLanguage;
 
 public interface BookFactory {
 
-    EducationalLiterature createEnglishEducationalLiterature();
+    RussianLanguage createRussianLiterature();
 
-    EducationalLiterature createRussianEducationalLiterature();
-
-    FictionLiterature createEnglishFictionLiterature();
-    FictionLiterature createRussianFictionLiterature();
+    EnglishLanguage createEnglishLiterature();
 }

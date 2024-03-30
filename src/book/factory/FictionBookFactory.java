@@ -1,9 +1,9 @@
 package book.factory;
 
-import book.educational.EducationalLiterature;
+import book.EnglishLanguage;
+import book.RussianLanguage;
 import book.IdGenerator;
 import book.fiction.EnglishFictionLiterature;
-import book.fiction.FictionLiterature;
 import book.fiction.RussianFictionLiterature;
 import book.Constants;
 import com.github.javafaker.Faker;
@@ -19,29 +19,20 @@ public class FictionBookFactory implements BookFactory {
     private final Faker faker = new Faker();
     private final List<String> ruFicBook = readLinesFromFile();
     private static final Random random = new Random();
-    @Override
-    public EducationalLiterature createEnglishEducationalLiterature() {
-        throw new UnsupportedOperationException("book.factory.FictionBookFactory не поддерживает создание учебной литературы.");
+
+
+    private List<String> readLinesFromFile() {
+        List<String> lines = new ArrayList<>();
+        try {
+            lines = Files.readAllLines(Paths.get(Constants.FICTION_RU_BOOKS_FILE));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return lines;
     }
 
     @Override
-    public EducationalLiterature createRussianEducationalLiterature() {
-        throw new UnsupportedOperationException("book.factory.FictionBookFactory не поддерживает создание учебной литературы.");
-    }
-
-
-    public FictionLiterature createEnglishFictionLiterature() {
-        int id = IdGenerator.generateId();
-        String author = faker.book().author();
-        String genre = faker.book().genre();
-        String publisher = faker.book().publisher();
-        String title = faker.book().title();
-        String name = "№ " + id + " " + author + " " + "'" + title + "'";
-//        String name = "'" + id + "'" +  " " + "'" +  author + "'" + " " + "'" + title + "'" + " " + "'" + genre + "'" + " " + "'" + publisher + "'";
-        return new EnglishFictionLiterature(author, name, genre, publisher);
-    }
-
-    public FictionLiterature createRussianFictionLiterature() {
+    public RussianLanguage createRussianLiterature() {
         int id = IdGenerator.generateId();
         String randomLine = ruFicBook.get(random.nextInt(ruFicBook.size()));
         String[] parts = randomLine.split(";");
@@ -57,13 +48,15 @@ public class FictionBookFactory implements BookFactory {
         return new RussianFictionLiterature(author, name, genre, year);
     }
 
-    private List<String> readLinesFromFile() {
-        List<String> lines = new ArrayList<>();
-        try {
-            lines = Files.readAllLines(Paths.get(Constants.FICTION_RU_BOOKS_FILE));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return lines;
+    @Override
+    public EnglishLanguage createEnglishLiterature() {
+        int id = IdGenerator.generateId();
+        String author = faker.book().author();
+        String genre = faker.book().genre();
+        String publisher = faker.book().publisher();
+        String title = faker.book().title();
+        String name = "№ " + id + " " + author + " " + "'" + title + "'";
+//        String name = "'" + id + "'" +  " " + "'" +  author + "'" + " " + "'" + title + "'" + " " + "'" + genre + "'" + " " + "'" + publisher + "'";
+        return new EnglishFictionLiterature(author, name, genre, publisher);
     }
 }

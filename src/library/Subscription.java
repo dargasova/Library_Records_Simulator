@@ -1,22 +1,33 @@
 package library;
 
-import book.Book;
+import book.educational.EducationalLiterature;
+import book.fiction.FictionLiterature;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Subscription {
-    private final List<Book> booksOnHand;
+    private final List<EducationalLiterature> educationalBooksOnHand;
+    private final List<FictionLiterature> fictionBooksOnHand;
 
     public Subscription() {
-        this.booksOnHand = new ArrayList<>();
+        this.educationalBooksOnHand = new ArrayList<>();
+        this.fictionBooksOnHand = new ArrayList<>();
     }
 
-    public List<Book> getBooksOnHand() {
-        return booksOnHand;
+    public List<EducationalLiterature> getEducationalBooksOnHand() {
+        return educationalBooksOnHand;
     }
 
-    public void addToBooksOnHand(Book book) {
-        booksOnHand.add(book);
+    public List<FictionLiterature> getFictionBooksOnHand() {
+        return fictionBooksOnHand;
+    }
+
+    public void addToEducationalBooksOnHand(EducationalLiterature book) {
+        educationalBooksOnHand.add(book);
+    }
+
+    public void addToFictionBooksOnHand(FictionLiterature book) {
+        fictionBooksOnHand.add(book);
     }
 }

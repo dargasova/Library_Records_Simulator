@@ -1,80 +1,98 @@
 package gui;
-import book.Book;
-import book.Constants;
-import library.Librarian;
+
+import book.educational.EducationalLiterature;
+import book.fiction.FictionLiterature;
 import library.Library;
-import library.LibraryManager;
+import library.Subscription;
 import user.*;
-import userBuilder.Director;
-import userBuilder.TeacherBuilder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.*;
+import javax.swing.*;
+import javax.swing.tree.DefaultMutableTreeNode;
+import java.awt.*;
+import java.net.URL;
 
-public class Main {
+public class Main extends JFrame {
 
-    public static void main(String[] args) {
-        LibraryManager libraryManager = new LibraryManager("Моя библиотека");
-
-        libraryManager.generateBooks();
-
-        Library library = libraryManager.getLibrary();
-        Librarian librarian = libraryManager.getLibrarian();
-
-        generateTeachers(librarian);
-        generateStudents(librarian);
-
-        for (User user : library.getUsers()) {
-            takeBooksFromLibrary(user, librarian, library);
+    public Main(Library library) {
+        try {
+            UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+        setTitle("Библиотека");
+        setExtendedState(JFrame.MAXIMIZED_BOTH);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Пользователи");
+
+        DefaultMutableTreeNode studentsNode = new DefaultMutableTreeNode("Студенты", true);
+        DefaultMutableTreeNode teachersNode = new DefaultMutableTreeNode("Преподаватели", true);
         for (User user : library.getUsers()) {
-            System.out.println(user.getName() + " взял(а) следующие книги:");
-            for (Book book : user.getSubscription().getBooksOnHand()) {
-                System.out.println(book.getName());
+            DefaultMutableTreeNode userNode = new DefaultMutableTreeNode(user.getFullName());
+            addBooksToNode(userNode, user);
+            if (user instanceof Student) {
+                studentsNode.add(userNode);
+            } else if (user instanceof Teacher) {
+                teachersNode.add(userNode);
             }
         }
+        rootNode.add(studentsNode);
+        rootNode.add(teachersNode);
+
+        JTree tree = new JTree(rootNode);
+        JScrollPane treeScrollPane = new JScrollPane(tree);
+
+        JLabel imageLabel = new JLabel();
+        ImageIcon icon = createImageIcon();
+        assert icon != null;
+        imageLabel.setIcon(new ImageIcon(icon.getImage().getScaledInstance(500, 650, Image.SCALE_DEFAULT)));
+
+        JLabel titleLabel = new JLabel("Библиотека", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 30));
+
+        JPanel rightPanel = new JPanel(new BorderLayout());
+        rightPanel.add(titleLabel, BorderLayout.NORTH);
+
+        JPanel centerPanel = new JPanel(new GridBagLayout());
+        centerPanel.add(imageLabel);
+        rightPanel.add(centerPanel, BorderLayout.CENTER);
+
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, treeScrollPane, rightPanel);
+        splitPane.setDividerLocation(900);
+        getContentPane().add(splitPane, BorderLayout.CENTER);
     }
 
-    static void generateTeachers(Librarian librarian) {
-        Director director = new Director();
-        List<User> teachers = director.generateTeachers(15);
-        for (User teacher : teachers) {
-            librarian.addUserToLibrary(teacher);
+    private void addBooksToNode(DefaultMutableTreeNode userNode, User user) {
+        Subscription subscription = user.getSubscription();
+        for (EducationalLiterature eduBook : subscription.getEducationalBooksOnHand()) {
+            userNode.add(new DefaultMutableTreeNode(eduBook.getName()));
+        }
+        for (FictionLiterature ficBook : subscription.getFictionBooksOnHand()) {
+            userNode.add(new DefaultMutableTreeNode(ficBook.getName()));
         }
     }
 
-    static void generateStudents(Librarian librarian) {
-        Director director = new Director();
-        List<User> students = director.generateStudents(15);
-        for (User student : students) {
-            librarian.addUserToLibrary(student);
+    public static void main(String[] args) {
+        Library library = Manager.initializeLibrary();
+
+        for (User user : library.getUsers()) {
+            Manager.takeBooksFromLibrary(user, library);
         }
+
+        SwingUtilities.invokeLater(() -> {
+            Main main = new Main(library);
+            main.setVisible(true);
+        });
     }
 
-    static void takeBooksFromLibrary(User user, Librarian librarian, Library library) {
-        int booksToTake = new Random().nextInt(8) + 3;
-
-        Set<Book> booksTaken = new HashSet<>();
-
-        for (int i = 0; i < booksToTake; i++) {
-            Book book;
-            do {
-                book = getRandomBook(library);
-            } while (booksTaken.contains(book));
-            librarian.issueBookToUser(user, book);
-            booksTaken.add(book);
+    protected static ImageIcon createImageIcon() {
+        URL imgURL = Main.class.getResource("library.jpg");
+        if (imgURL != null) {
+            return new ImageIcon(imgURL);
+        } else {
+            System.err.println("Файл не найден: " + "library.jpg");
+            return null;
         }
-    }
-
-
-    private static Book getRandomBook(Library library) {
-        List<Book> allBooks = new ArrayList<>();
-        allBooks.addAll(library.getEducationalBooks());
-        allBooks.addAll(library.getFictionBooks());
-
-        Random random = new Random();
-        return allBooks.get(random.nextInt(allBooks.size()));
     }
 }

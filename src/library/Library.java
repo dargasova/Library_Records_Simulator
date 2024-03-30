@@ -13,6 +13,7 @@ public class Library {
     private final List<FictionLiterature> fictionBooks;
     private final List<User> users;
     private final List<Subscription> subscriptions;
+    private Librarian librarian;
 
     public Library(String name) {
         this.name = name;
@@ -56,5 +57,13 @@ public class Library {
 
     public List<Subscription> getSubscriptions() {
         return subscriptions;
+    }
+
+    public Librarian getLibrarian() {
+        return librarian;
+    }
+
+    public void setLibrarian(Librarian librarian) {
+        this.librarian = librarian;
     }
 }

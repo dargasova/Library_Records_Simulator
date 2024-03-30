@@ -1,9 +1,9 @@
 package book.factory;
 
-import book.educational.EducationalLiterature;
+import book.EnglishLanguage;
+import book.RussianLanguage;
 import book.educational.EnglishEducationalLiterature;
 import book.educational.RussianEducationalLiterature;
-import book.fiction.FictionLiterature;
 import book.IdGenerator;
 import book.Constants;
 import com.github.javafaker.Faker;
@@ -37,17 +37,7 @@ public class EducationalBookFactory implements BookFactory {
 
 
     @Override
-    public EducationalLiterature createEnglishEducationalLiterature() {
-        int id = IdGenerator.generateId();
-        String author = faker.book().author();
-        String discipline = enDisciplines.get(random.nextInt(enDisciplines.size()));
-        String university = faker.educator().university();
-        String level = faker.bool().bool() ? "Bachelor course" : "Master's course";
-        String name = "№ " + id + " " + author + " " + "'" + discipline + "'";
-        return new EnglishEducationalLiterature(author, name, discipline, level, university);
-    }
-
-    public EducationalLiterature createRussianEducationalLiterature() {
+    public RussianLanguage createRussianLiterature() {
         int id = IdGenerator.generateId();
         String discipline = ruDisciplines.get(random.nextInt(ruDisciplines.size()));
         String author = ruAuthors.get(random.nextInt(ruAuthors.size()));
@@ -57,13 +47,15 @@ public class EducationalBookFactory implements BookFactory {
     }
 
     @Override
-    public FictionLiterature createEnglishFictionLiterature() {
-        throw new UnsupportedOperationException("Fiction.EducationalBookFactory не поддерживает создание художественной литературы.");
+    public EnglishLanguage createEnglishLiterature() {
+        int id = IdGenerator.generateId();
+        String author = faker.book().author();
+        String discipline = enDisciplines.get(random.nextInt(enDisciplines.size()));
+        String university = faker.educator().university();
+        String level = faker.bool().bool() ? "Bachelor course" : "Master's course";
+        String name = "№ " + id + " " + author + " " + "'" + discipline + "'";
+        return new EnglishEducationalLiterature(author, name, discipline, level, university);
     }
 
-    @Override
-    public FictionLiterature createRussianFictionLiterature() {
-        throw new UnsupportedOperationException("Fiction.EducationalBookFactory не поддерживает создание художественной литературы.");
-    }
 }
 

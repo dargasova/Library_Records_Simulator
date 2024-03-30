@@ -1,13 +1,28 @@
 package book.educational;
 
-import book.Book;
-
-public abstract class EducationalLiterature extends Book {
+public abstract class EducationalLiterature {
     public String discipline;
+    protected String author;
+    protected String name;
+    protected boolean borrowed;
 
     public EducationalLiterature(String author, String name, String discipline) {
-        super(author, name);
+        initialize(author, name);
         this.discipline = discipline;
     }
 
+    private void initialize(String author, String name) {
+        this.author = author;
+        this.name = name;
+        this.borrowed = false;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }

@@ -2,7 +2,6 @@ package library;
 
 import book.educational.EducationalLiterature;
 import book.fiction.FictionLiterature;
-import book.Book;
 import user.User;
 
 public class Librarian {
@@ -24,17 +23,34 @@ public class Librarian {
         library.addFictionBook(book);
     }
 
-    public void issueBookToUser(User user, Book book) {
-        Subscription subscription = findSubscriptionContainingBook(book);
+    public void issueEducationalBookToUser(User user, EducationalLiterature book) {
+        Subscription subscription = findSubscriptionContainingEducationalBook(book);
         if (subscription == null) {
             subscription = user.getSubscription();
-            subscription.addToBooksOnHand(book);
+            subscription.addToEducationalBooksOnHand(book);
         }
     }
 
-    private Subscription findSubscriptionContainingBook(Book book) {
+    public void issueFictionBookToUser(User user, FictionLiterature book) {
+        Subscription subscription = findSubscriptionContainingFictionBook(book);
+        if (subscription == null) {
+            subscription = user.getSubscription();
+            subscription.addToFictionBooksOnHand(book);
+        }
+    }
+
+    private Subscription findSubscriptionContainingEducationalBook(EducationalLiterature book) {
         for (Subscription subscription : library.getSubscriptions()) {
-            if (subscription.getBooksOnHand().contains(book)) {
+            if (subscription.getEducationalBooksOnHand().contains(book)) {
+                return subscription;
+            }
+        }
+        return null;
+    }
+
+    private Subscription findSubscriptionContainingFictionBook(FictionLiterature book) {
+        for (Subscription subscription : library.getSubscriptions()) {
+            if (subscription.getFictionBooksOnHand().contains(book)) {
                 return subscription;
             }
         }
